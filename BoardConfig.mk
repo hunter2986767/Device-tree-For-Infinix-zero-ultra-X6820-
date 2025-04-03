@@ -149,6 +149,3 @@ TW_INCLUDE_LPTOOLS := true
 # Debug
 TWRP_INCLUDE_LOGCAT := true
 TARGET_USES_LOGD := true
-
-# Version
-include $(DEVICE_PATH)/version.mk
