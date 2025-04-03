@@ -1,0 +1,157 @@
+#
+# Copyright (C) 2025 The Android Open Source Project
+# Copyright (C) 2025 SebaUbuntu's TWRP device tree generator
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+DEVICE_PATH := device/infinix/Infinix-X6820
+
+# For building with minimal manifest
+ALLOW_MISSING_DEPENDENCIES := true
+
+# Relax ELF prebuilts in PRODUCT_COPY_FILES rule
+# https://android.googlesource.com/platform/build/+/refs/heads/main/Changes.md#elf-prebuilts-in-build_broken_elf_prebuilt_product_copy_files
+BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
+
+# A/B
+AB_OTA_UPDATER := true
+AB_OTA_PARTITIONS += \
+    system \
+    system \
+    vendor \
+    product \
+    system_ext \
+    vendor_dlkm \
+    odm_dlkm \
+    boot \
+    vbmeta_vendor \
+    vbmeta_system \
+
+# Architecture
+TARGET_ARCH := arm64
+TARGET_ARCH_VARIANT := armv8-a
+TARGET_CPU_ABI := arm64-v8a
+TARGET_CPU_ABI2 := 
+TARGET_CPU_VARIANT := generic
+TARGET_CPU_VARIANT_RUNTIME := cortex-a55
+
+TARGET_2ND_ARCH := arm
+TARGET_2ND_ARCH_VARIANT := armv7-a-neon
+TARGET_2ND_CPU_ABI := armeabi-v7a
+TARGET_2ND_CPU_ABI2 := armeabi
+TARGET_2ND_CPU_VARIANT := generic
+TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a55
+
+# Bootloader
+TARGET_BOOTLOADER_BOARD_NAME := Infinix-X6820
+TARGET_NO_BOOTLOADER := true
+
+# Display
+TARGET_SCREEN_DENSITY := 480
+
+# Kernel
+BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,64N2 androidboot.init_fatal_reboot_target=recovery
+BOARD_BOOTIMG_HEADER_VERSION := 2
+BOARD_KERNEL_BASE := 0x40078000
+BOARD_KERNEL_PAGESIZE := 2048
+BOARD_RAMDISK_OFFSET := 0x11088000
+BOARD_KERNEL_TAGS_OFFSET := 0x07c08000
+BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOTIMG_HEADER_VERSION)
+BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_KERNEL_TAGS_OFFSET)
+BOARD_KERNEL_IMAGE_NAME := Image
+BOARD_INCLUDE_DTB_IN_BOOTIMG := true
+TARGET_KERNEL_CONFIG := X6820_defconfig
+TARGET_KERNEL_SOURCE := kernel/infinix/X6820
+
+# Kernel - prebuilt
+TARGET_FORCE_PREBUILT_KERNEL := true
+ifeq ($(TARGET_FORCE_PREBUILT_KERNEL),true)
+TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/kernel
+TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilt/dtb.img
+BOARD_MKBOOTIMG_ARGS += --dtb $(TARGET_PREBUILT_DTB)
+BOARD_INCLUDE_DTB_IN_BOOTIMG := 
+endif
+
+# Partitions
+BOARD_FLASH_BLOCK_SIZE := 131072 # (BOARD_KERNEL_PAGESIZE * 64)
+BOARD_BOOTIMAGE_PARTITION_SIZE := 41943040
+BOARD_RECOVERYIMAGE_PARTITION_SIZE := 41943040
+BOARD_HAS_LARGE_FILESYSTEM := true
+BOARD_SUPER_PARTITION_SIZE := 9126805504 # TODO: Fix hardcoded value
+BOARD_SUPER_PARTITION_GROUPS := infinix_dynamic_partitions
+BOARD_INFINIX_DYNAMIC_PARTITIONS_PARTITION_LIST := system system vendor product system_ext vendor_dlkm odm_dlkm
+BOARD_INFINIX_DYNAMIC_PARTITIONS_SIZE := 9122611200 # TODO: Fix hardcoded value
+
+BOARD_SYSTEMIMAGE_PARTITION_TYPE := erofs
+BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := erofs
+BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
+TARGET_USERIMAGES_USE_EXT4 := true
+TARGET_USERIMAGES_USE_F2FS := true
+
+TARGET_COPY_OUT_VENDOR := vendor
+
+# Platform
+TARGET_BOARD_PLATFORM := mt6877
+
+# Recovery
+TARGET_NO_RECOVERY := true
+BOARD_USES_GENERIC_KERNEL_IMAGE := true
+BOARD_HAS_NO_SELECT_BUTTON := true
+TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
+BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT := true
+BOARD_INCLUDE_RECOVERY_RAMDISK_IN_VENDOR_BOOT := true
+BOARD_SUPPRESS_SECURE_ERASE := true
+TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
+
+# Verified Boot
+BOARD_AVB_ENABLE := true
+
+# Crypto
+TW_INCLUDE_CRYPTO := true
+TW_INCLUDE_CRYPTO_FBE := true
+TW_INCLUDE_FBE_METADATA_DECRYPT := true
+BOARD_USES_METADATA_PARTITION := true
+PLATFORM_VERSION := 13
+PLATFORM_VERSION_LAST_STABLE := $(PLATFORM_VERSION)
+PLATFORM_SECURITY_PATCH := 2099-12-31
+VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)
+BOOT_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)
+
+TW_USE_KEYMASTER := true
+
+# TWRP Configuration
+TW_CUSTOM_CLOCK_POS := 40
+TW_CUSTOM_CPU_POS := 290
+TW_CUSTOM_CPU_TEMP_PATH := /sys/class/thermal/thermal_zone28/temp
+TW_DEFAULT_BRIGHTNESS := 2047
+TW_MAX_BRIGHTNESS := 4097
+TW_DEVICE_VERSION := ${shell git -C $(DEVICE_PATH) rev-parse --short HEAD}-Shivelight
+TW_EXCLUDE_APEX := true
+TW_EXTRA_LANGUAGES := true
+TW_HAS_NO_RECOVERY_PARTITION := true
+TW_INCLUDE_FASTBOOTD := true
+TW_INPUT_BLACKLIST := "hbtp_vm"
+TW_NO_FLASH_CURRENT_TWRP := true
+TW_SCREEN_BLANK_ON_BOOT := true
+TW_THEME := portrait_hdpi
+TW_USE_TOOLBOX := true
+TARGET_USE_CUSTOM_LUN_FILE_PATH := /config/usb_gadget/g1/functions/mass_storage.usb0/lun.%d/file
+TARGET_USES_MKE2FS := true
+TW_FRAMERATE := 60
+
+# Tools
+TW_INCLUDE_FUSE_EXFAT := true
+TW_INCLUDE_LIBRESETPROP := true
+TW_INCLUDE_NTFS_3G := true
+TW_INCLUDE_REPACKTOOLS := true
+TW_INCLUDE_RESETPROP := true
+TW_INCLUDE_LPTOOLS := true
+
+# Debug
+TWRP_INCLUDE_LOGCAT := true
+TARGET_USES_LOGD := true
+
+# Version
+include $(DEVICE_PATH)/version.mk
