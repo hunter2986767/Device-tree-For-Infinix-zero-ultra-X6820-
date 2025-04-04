@@ -10,10 +10,6 @@ DEVICE_PATH := device/infinix/Infinix-X6820
 # For building with minimal manifest
 ALLOW_MISSING_DEPENDENCIES := true
 
-# Relax ELF prebuilts in PRODUCT_COPY_FILES rule
-# https://android.googlesource.com/platform/build/+/refs/heads/main/Changes.md#elf-prebuilts-in-build_broken_elf_prebuilt_product_copy_files
-BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
-
 # A/B
 AB_OTA_UPDATER := true
 AB_OTA_PARTITIONS += \
@@ -60,7 +56,7 @@ BOARD_KERNEL_TAGS_OFFSET := 0x07c08000
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOTIMG_HEADER_VERSION)
 BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_KERNEL_TAGS_OFFSET)
-BOARD_KERNEL_IMAGE_NAME := kernel
+BOARD_KERNEL_IMAGE_NAME := Image
 BOARD_INCLUDE_DTB_IN_BOOTIMG := true
 TARGET_KERNEL_CONFIG := X6820_defconfig
 TARGET_KERNEL_SOURCE := kernel/infinix/X6820
